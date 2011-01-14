@@ -10,7 +10,7 @@ class FakeCache
     @cache[key] = value
   end
 
-  def unset(key) 
+  def delete(key) 
     @cache[key] = nil
   end
 
@@ -101,7 +101,7 @@ end
 
 # Log a user out and clear the session/ticket cache
 get '/logout' do
-  CACHE.unset(session['ticket'])
+  CACHE.delete(session['ticket'])
 
   session['ticket'] = nil
   session['username'] = nil
