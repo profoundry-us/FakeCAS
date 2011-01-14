@@ -1,4 +1,6 @@
 source 'http://gemcutter.org'
 
 gem "sinatra"
-gem "rack-flash"
+gem "dalli"
+gem "uuidtools"
+gem "kgio"

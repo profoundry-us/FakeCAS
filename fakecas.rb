@@ -1,8 +1,38 @@
 require 'sinatra'
-require 'rack-flash'
+require 'dalli'
+require 'uuidtools'
 
-enable :sessions
-use Rack::Flash
+class FakeCache
+  def initialize
+    @cache = {}
+  end
+
+  def set(key, value)
+    @cache[key] = value
+  end
+
+  def unset(key) 
+    @cache[key] = nil
+  end
+
+  def get(key)
+    @cache[key]
+  end
+end
+
+configure do
+  enable :sessions
+
+  if ENV['RACK_ENV'] == 'production'
+    CACHE = Dalli::Client.new 
+  else
+    CACHE = FakeCache.new
+  end
+end
+
+def generate_ticket
+  UUIDTools::UUID.timestamp_create.to_s
+end
 
 
 # Currently, if a user just hits fakecas.heroku.com, redirect them to the login page
@@ -13,6 +43,16 @@ end
 
 # Allow a user to enter their username/password
 get '/login' do
+  @message = nil
+
+  if params['blanks'] == 'true'
+    @message = "Please provide both a username and a password."
+  end
+
+  if params['nomatch'] == 'true'
+    @message = "The username and password provided do not match."
+  end
+
   session['service'] = params['service']
   erb :login
 end
@@ -26,22 +66,40 @@ post '/login' do
     session['service'] = params['service']
   end
 
-  # If the username and password were provided, send back a ticket, otherwise redirect to the login page
-  if params['username'] and params['password']
+  # If the username and password were provided, store them in the session so they can be displayed if they
+  # are invalid.
+  if params['username'].nil? or params['password'].nil? or params['username'].empty? or params['password'].empty?
+    redirect "/login?blanks=true&service=#{session['service']}"
+  else
     session['username'] = params['username']
     session['password'] = params['password']
-
-puts " *** session: #{session.inspect}"
-
-    redirect "#{session['service']}&ticket=1234567890"
-  else
-    redirect '/login'
   end
+
+  # If the username/password are equal, generate the ticket and redirect to the application, otherwise, make
+  # them login again.
+  if params['username'] == params['password']
+    ticket = generate_ticket
+
+    session['ticket'] = ticket
+    CACHE.set(ticket, {
+      :service => session['service'],
+      :timestamp => Time.new.to_i,
+      :username => params['username']
+    })
+
+    redirect "#{session['service']}?ticket=#{ticket}"
+  else
+    redirect "/login?nomatch=true&service=#{session['service']}"
+  end
+
 end
 
 
-# Log a user out and clear the session
+# Log a user out and clear the session/ticket cache
 get '/logout' do
+  CACHE.unset(session['ticket'])
+
+  session['ticket'] = nil
   session['username'] = nil
   session['password'] = nil
 
@@ -51,10 +109,17 @@ end
 
 # Validate that the user logged in properly
 get '/validate' do
-puts " *** session: #{session.inspect}"
-  if params['ticket'] == '1234567890' and session['username'] and session['password'] and session['username'] == session['password']
-    "yes\n#{session['username']}"
+
+  if params['ticket']
+    data = CACHE.get(params['ticket'])
+
+    if Time.at(data[:timestamp]) > (Time.now - 3600) # 1 hour ago
+      "yes\n#{data[:username]}"
+    else
+      "no"
+    end
   else
     "no"
   end
+
 end

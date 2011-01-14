@@ -1,0 +1,35 @@
+== FakeCAS
+
+FakeCAS is a development tool that aims to ease the process of creating a CAS client by pretending to be a CAS
+1.0 compliant server. This means you don't have to setup an actual CAS server to test your client code. In
+addition, it gives you an easy way to play with some of the parameters that are sent back and forth between
+the client and the server.
+
+== Capabilities
+
+Currently, FakeCAS supports only what I need it to, and is thus not fully CAS 1.0 compliant. It supports the
+following URLs and gives back a fake ticket of "1234567890" (which I'm sure is not compliant):
+
+* <tt>GET /login?service=some_url</tt> - Stores the service and displays a login prompt for the user.
+* <tt>POST /login</tt> - Accepts the username and password parameters generated from the login page (or your own code if you prefer) and redirects to the service stored via <tt>GET /login</tt> OR the service you provide in the parameters.
+* <tt>GET /logout?service=some_url</tt> - Clears the saved session variables and redirects to the requested service.
+* <tt>GET /validate?ticket=1234567890</tt> - If the ticket matches <tt>1234567890</tt> and the stored username/password match, it prints out <tt>"yes\n#{username}"</tt>. Otherwise, it prints out <tt>no</tt>.
+
+== Development Plan
+
+Currently FakeCAS does just enough to be useful to me, however I do have some plans for it.
+
+1. Make it look a little bit nicer by actually providing some styles for the login page.
+2. Flesh out the CAS 1.0 compatibility.
+3. Work on CAS 2.0 compatibility.
+4. Ensure it works with all versions of the CAS specification.
+
+== Contributing
+
+If you would like to help on any of the development fronts, just fork the repo and send me a pull request. If
+you're intereseted in becoming a core contributer, send me a few useful pull requests first, then contact me
+with how you'd like to help and I'll put you on the team!
+
+If you're a designer and want to create a really great landing page for FakeCAS, contact me through Github and
+we'll get things under way. I'm not much of a designer myself, so any help from a professional designer (i.e.
+one who makes any money from design work) would be greatly appreciated!

@@ -28,6 +28,12 @@
         username and password the same. If they match, it'll send back "yes\nusername" (or whatever you
         entered as the username). If they don't, it will send back "no" (as per the CAS 1.0 specification).
       </p>
+
+      <% if @message %>
+        <p>
+          <%= @message %>
+        </p>
+      <% end %>
     
       <form action='/login' method='POST'>
 
