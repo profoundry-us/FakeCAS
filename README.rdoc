@@ -1,14 +1,14 @@
 == FakeCAS
 
-FakeCAS is a development tool that aims to ease the process of creating a CAS client by pretending to be a CAS
-1.0 compliant server. This means you don't have to setup an actual CAS server to test your client code. In
-addition, it gives you an easy way to play with some of the parameters that are sent back and forth between
-the client and the server.
+{FakeCAS}[https://fakecas.heroku.com] is a development tool that aims to ease the process of creating a CAS
+client by pretending to be a CAS 1.0 compliant server. This means you don't have to setup an actual CAS server
+to test your client code. In addition, it gives you an easy way to play with some of the parameters that are
+sent back and forth between the client and the server.
 
 == Capabilities
 
 Currently, FakeCAS supports only what I need it to, and is thus not fully CAS 1.0 compliant. It supports the
-following URLs and gives back a fake ticket of "1234567890" (which I'm sure is not compliant):
+following URLs and gives back a fake, randomlly generated ticket (which is probably not compliant):
 
 * <tt>GET /login?service=some_url</tt> - Stores the service and displays a login prompt for the user.
 * <tt>POST /login?service=some_url</tt> - Accepts the POST username parameter generated from the login page (or your own code if you prefer) and redirects to the service stored via <tt>GET /login</tt>. You can override the stored service by providing a new one as an optional parameter.
