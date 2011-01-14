@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title>FakeCAS</title>
+
+    <style>
+      html {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      div.container {
+        width: 960px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class='container'>
+      <p>
+        Thanks for logging in using FakeCAS! If you want the request to succeed, simply make the
+        username and password the same. If they match, it'll send back "yes\nusername" (or whatever you
+        entered as the username). If they don't, it will send back "no" (as per the CAS 1.0 specification).
+      </p>
+    
+      <form action='/login' method='POST'>
+
+        <p>
+          <label>Username:</label>
+          <input type='text' name='username' value='<%= session['username'] %>' />
+        </p>
+
+        <p>
+          <label>Password:</label>
+          <input type='text' name='password' value='<%= session['password'] %>' />
+        </p>
+
+        <p>
+          <input type='submit' value='Login' />
+        </p>
+
+      </form>
+
+    </div>
+  </body>
+</html>
