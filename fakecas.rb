@@ -4,6 +4,13 @@ require 'rack-flash'
 enable :sessions
 use Rack::Flash
 
+
+# Currently, if a user just hits fakecas.heroku.com, redirect them to the login page
+get '/' do
+ redirect '/login'
+end
+
+
 # Allow a user to enter their username/password
 get '/login' do
   session['service'] = params['service']
@@ -24,6 +31,8 @@ post '/login' do
     session['username'] = params['username']
     session['password'] = params['password']
 
+puts " *** session: #{session.inspect}"
+
     redirect "#{session['service']}&ticket=1234567890"
   else
     redirect '/login'
@@ -42,6 +51,7 @@ end
 
 # Validate that the user logged in properly
 get '/validate' do
+puts " *** session: #{session.inspect}"
   if params['ticket'] == '1234567890' and session['username'] and session['password'] and session['username'] == session['password']
     "yes\n#{session['username']}"
   else
