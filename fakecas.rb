@@ -42,7 +42,7 @@ end
 
 # Validate that the user logged in properly
 get '/validate' do
-  if params['ticket'] == '1234567890' and session['username'] == session['password']
+  if params['ticket'] == '1234567890' and session['username'] and session['password'] and session['username'] == session['password']
     "yes\n#{session['username']}"
   else
     "no"
