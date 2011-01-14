@@ -12,8 +12,8 @@ following URLs and gives back a fake, randomlly generated ticket (which is proba
 
 * <tt>GET /login?service=some_url</tt> - Stores the service and displays a login prompt for the user.
 * <tt>POST /login?service=some_url</tt> - Accepts the POST username parameter generated from the login page (or your own code if you prefer) and redirects to the service stored via <tt>GET /login</tt>. You can override the stored service by providing a new one as an optional parameter.
-* <tt>GET /logout?service=some_url</tt> - Clears the saved session variables and redirects to the requested service.
-* <tt>GET /validate?ticket=1234567890</tt> - If the ticket matches <tt>1234567890</tt> and the stored username/password match, it prints out <tt>"yes\n#{username}"</tt>. Otherwise, it prints out <tt>no</tt>.
+* <tt>GET /logout?service=some_url</tt> - Clears the saved data and redirects to the requested service.
+* <tt>GET /validate?ticket=12345-67890-12345-67890</tt> - If the ticket is found, it prints out <tt>"yes\n#{username}"</tt>. Otherwise, it prints out <tt>no</tt>.
 
 == Development Plan
 
