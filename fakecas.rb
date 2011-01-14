@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'dalli'
 require 'uuidtools'
 
 class FakeCache
@@ -24,6 +23,7 @@ configure do
   enable :sessions
 
   if ENV['RACK_ENV'] == 'production'
+    require 'dalli'
     CACHE = Dalli::Client.new 
   else
     CACHE = FakeCache.new
@@ -87,7 +87,11 @@ post '/login' do
       :username => params['username']
     })
 
-    redirect "#{session['service']}?ticket=#{ticket}"
+    if session['service'].include? '?'
+      redirect "#{session['service']}&ticket=#{ticket}"
+    else
+      redirect "#{session['service']}?ticket=#{ticket}"
+    end
   else
     redirect "/login?nomatch=true&service=#{session['service']}"
   end
