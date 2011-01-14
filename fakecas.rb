@@ -13,8 +13,14 @@ end
 
 # Save the username/password in the session and redirect them back to the application with the ticket
 post '/login' do
-  if params['username'] and params['password']
 
+  # If they pass the service, simply override the one we stored during login
+  if params['service']
+    session['service'] = params['service']
+  end
+
+  # If the username and password were provided, send back a ticket, otherwise redirect to the login page
+  if params['username'] and params['password']
     session['username'] = params['username']
     session['password'] = params['password']
 
