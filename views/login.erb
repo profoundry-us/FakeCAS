@@ -23,10 +23,12 @@
 
   <body>
     <div class='container'>
+      <h1>Thanks for using FakeCAS!</h1>
+
       <p>
-        Thanks for logging in using FakeCAS! If you want the request to succeed, simply make the
-        username and password the same. If they match, it'll send back "yes\nusername" (or whatever you
-        entered as the username). If they don't, it will send back "no" (as per the CAS 1.0 specification).
+        To login to your system using FakeCAS, simply enter the username of the user you wish to log in as.
+        You will be able to call /validate for up to one hour before it times out and sends back a "no"
+        response.
       </p>
 
       <% if @message %>
@@ -40,11 +42,6 @@
         <p>
           <label>Username:</label>
           <input type='text' name='username' value='<%= session['username'] %>' />
-        </p>
-
-        <p>
-          <label>Password:</label>
-          <input type='text' name='password' value='<%= session['password'] %>' />
         </p>
 
         <p>

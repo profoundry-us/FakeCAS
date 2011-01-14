@@ -41,16 +41,12 @@ get '/' do
 end
 
 
-# Allow a user to enter their username/password
+# Allow a user to enter the requested username
 get '/login' do
   @message = nil
 
   if params['blanks'] == 'true'
-    @message = "Please provide both a username and a password."
-  end
-
-  if params['nomatch'] == 'true'
-    @message = "The username and password provided do not match."
+    @message = "Please provide the username of the user you wish to log in as."
   end
 
   session['service'] = params['service']
@@ -58,7 +54,7 @@ get '/login' do
 end
 
 
-# Save the username/password in the session and redirect them back to the application with the ticket
+# Save the username in the session and redirect them back to the application with the ticket
 post '/login' do
 
   # If they pass the service, simply override the one we stored during login
@@ -66,34 +62,29 @@ post '/login' do
     session['service'] = params['service']
   end
 
-  # If the username and password were provided, store them in the session so they can be displayed if they
-  # are invalid.
-  if params['username'].nil? or params['password'].nil? or params['username'].empty? or params['password'].empty?
+
+  # If the username is not provided or is empty, redirect back to the login page and let the user know
+  if params['username'].nil? or params['username'].empty?
     redirect "/login?blanks=true&service=#{session['service']}"
   else
     session['username'] = params['username']
-    session['password'] = params['password']
   end
 
-  # If the username/password are equal, generate the ticket and redirect to the application, otherwise, make
-  # them login again.
-  if params['username'] == params['password']
-    ticket = generate_ticket
 
-    session['ticket'] = ticket
-    CACHE.set(ticket, {
-      :service => session['service'],
-      :timestamp => Time.new.to_i,
-      :username => params['username']
-    })
+  # Generate and store the ticket!
+  ticket = generate_ticket
 
-    if session['service'].include? '?'
-      redirect "#{session['service']}&ticket=#{ticket}"
-    else
-      redirect "#{session['service']}?ticket=#{ticket}"
-    end
+  session['ticket'] = ticket
+  CACHE.set(ticket, {
+    :service => session['service'],
+    :timestamp => Time.new.to_i,
+    :username => params['username']
+  })
+
+  if session['service'].include? '?'
+    redirect "#{session['service']}&ticket=#{ticket}"
   else
-    redirect "/login?nomatch=true&service=#{session['service']}"
+    redirect "#{session['service']}?ticket=#{ticket}"
   end
 
 end
@@ -105,7 +96,6 @@ get '/logout' do
 
   session['ticket'] = nil
   session['username'] = nil
-  session['password'] = nil
 
   redirect "#{params['service']}"
 end
