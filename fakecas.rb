@@ -99,7 +99,7 @@ get '/logout' do
 
 	service = params['service']
 
-	if not service.present?
+	if service.nil? or service.empty?
 		service = params['url']
 	end
 
