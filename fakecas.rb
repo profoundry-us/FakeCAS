@@ -97,7 +97,13 @@ get '/logout' do
   session['ticket'] = nil
   session['username'] = nil
 
-  redirect "#{params['service']}"
+	service = params['service']
+
+	if not service.present?
+		service = params['url']
+	end
+
+  redirect "#{service}"
 end
 
 
