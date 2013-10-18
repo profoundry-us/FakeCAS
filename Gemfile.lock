@@ -1,8 +1,8 @@
 GEM
   remote: http://gemcutter.org/
   specs:
-    dalli (1.0.1)
     kgio (2.1.1)
+    memcachier (0.0.2)
     rack (1.2.1)
     sinatra (1.1.0)
       rack (~> 1.1)
@@ -14,7 +14,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  dalli
   kgio
+  memcachier
   sinatra
   uuidtools

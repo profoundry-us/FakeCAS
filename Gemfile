@@ -1,6 +1,6 @@
 source 'http://gemcutter.org'
 
 gem "sinatra"
-gem "dalli"
+gem "memcachier"
 gem "uuidtools"
 gem "kgio"
